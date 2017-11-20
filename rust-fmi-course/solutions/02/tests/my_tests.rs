@@ -57,6 +57,28 @@ fn test_addition_multiplication() {
 }
 
 #[test]
+fn test_mutability() {
+    let p = Polynomial::from(vec![1.0, 2.0, 3.0, 4.0]);
+    let q = Polynomial::from(vec![5.0, 6.0]);
+
+    assert_eq!(
+        (p.clone() * 2.0)/2.0,
+        p
+    );
+
+    assert_eq!(
+        p.clone() + q.clone(),
+        Polynomial::from(vec![1.0, 2.0, 8.0, 10.0])
+    );
+/*
+    assert_eq!(
+        p * q,
+        Polynomial::from(vec![1.0, 2.0, 8.0, 10.0])
+    );
+*/
+}
+
+#[test]
 fn test_interpolation() {
     assert_eq!(
         Polynomial::interpolate(vec! {

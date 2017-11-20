@@ -88,7 +88,6 @@ impl PartialEq for Polynomial {
 impl Mul<f64> for Polynomial {
     type Output = Polynomial;
     fn mul(self, rhs: f64) -> Self::Output {
-        //TODO: figure out how to do this in-place, without creating a new vector...
         Polynomial::new(self.coefs.iter().map(|&c| c*rhs).collect())
     }
 }
@@ -96,7 +95,6 @@ impl Mul<f64> for Polynomial {
 impl Div<f64> for Polynomial {
     type Output = Polynomial;
     fn div(self, rhs: f64) -> Self::Output {
-        //TODO: figure out how to do this in-place, without creating a new vector...
         Polynomial::new(self.coefs.iter().map(|&c| c/rhs).collect())
     }
 }
