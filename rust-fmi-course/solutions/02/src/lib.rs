@@ -15,12 +15,9 @@ fn eq(x: f64, y: f64) -> bool {
 
 impl Polynomial {
     pub fn has(&self, point: &(f64, f64)) -> bool {
-        //TODO: do this with iter.fold()?
-        let mut val = 0.0;
-        for (i, item) in self.coefs.iter().enumerate() {
-            val = val + item * f64::powi(point.0, i as i32);
-        }
-        eq(val, point.1)
+        eq(point.1, self.coefs.iter().enumerate().fold(0.0, |sum, v| {
+            sum + v.1 * f64::powi(point.0, v.0 as i32)
+        }))
     }
 
     pub fn interpolate(points: Vec<(f64, f64)>) -> Option<Self> {
