@@ -1,0 +1,3 @@
+[submodule "rust-fmi-course/homework"]
+	path = rust-fmi-course/homework
+	url = https://github.com/fmi/rust-homework
