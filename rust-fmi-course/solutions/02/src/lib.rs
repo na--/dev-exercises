@@ -1,10 +1,10 @@
-use std::ops::{Mul,Div,Add};
+use std::ops::{Add, Div, Mul};
 use std::default::Default;
 use std::cmp::PartialEq;
 
 #[derive(Debug, Clone)]
 pub struct Polynomial {
-    coefs: Vec<f64>
+    coefs: Vec<f64>,
 }
 
 fn eq(x: f64, y: f64) -> bool {
@@ -15,9 +15,13 @@ fn eq(x: f64, y: f64) -> bool {
 
 impl Polynomial {
     pub fn has(&self, point: &(f64, f64)) -> bool {
-        eq(point.1, self.coefs.iter().enumerate().fold(0.0, |sum, v| {
-            sum + v.1 * f64::powi(point.0, v.0 as i32)
-        }))
+        eq(
+            point.1,
+            self.coefs
+                .iter()
+                .enumerate()
+                .fold(0.0, |sum, v| sum + v.1 * f64::powi(point.0, v.0 as i32)),
+        )
     }
 
     pub fn interpolate(points: Vec<(f64, f64)>) -> Option<Self> {
@@ -29,83 +33,80 @@ impl Polynomial {
                 if j == m {
                     continue;
                 }
-                if jpoint.0 == mpoint.0  {
+                if jpoint.0 == mpoint.0 {
                     return None;
                 }
-                interm = interm
-                    * Polynomial::new(vec![-mpoint.0, 1.0])
-                    / (jpoint.0 - mpoint.0);
-
-            };
+                interm = interm * Polynomial::new(vec![-mpoint.0, 1.0]) / (jpoint.0 - mpoint.0);
+            }
             res = res + interm;
-        };
+        }
 
         Some(res)
     }
 
 
     fn trim_trailing_zeros(&mut self) {
-        match self.coefs.iter().rposition(|&x| ! eq(x, 0.0)) {
+        match self.coefs.iter().rposition(|&x| !eq(x, 0.0)) {
             None => self.coefs.clear(),
-            Some(pos) => self.coefs.truncate(pos+1),
+            Some(pos) => self.coefs.truncate(pos + 1),
         }
     }
 
     fn new(asc_coefs: Vec<f64>) -> Self {
-        let mut p = Polynomial{coefs: asc_coefs};
+        let mut p = Polynomial { coefs: asc_coefs };
         p.trim_trailing_zeros();
-        return p
+        return p;
     }
 }
 
 impl From<Vec<f64>> for Polynomial {
     fn from(mut coefs: Vec<f64>) -> Self {
         coefs.reverse();
-        return Polynomial::new(coefs)
+        return Polynomial::new(coefs);
     }
 }
 
 impl Default for Polynomial {
-   fn default() -> Polynomial {
-       Polynomial{coefs: vec![]}
+    fn default() -> Polynomial {
+        Polynomial { coefs: vec![] }
     }
 }
 
 impl PartialEq for Polynomial {
     fn eq(&self, rhs: &Self) -> bool {
         if self.coefs.len() != rhs.coefs.len() {
-            return false
+            return false;
         }
         for i in 0..self.coefs.len() {
-            if ! eq(self.coefs[i], rhs.coefs[i]) {
-                return false
+            if !eq(self.coefs[i], rhs.coefs[i]) {
+                return false;
             }
         }
-        return true
+        return true;
     }
 }
 
 impl Mul<f64> for Polynomial {
     type Output = Polynomial;
     fn mul(self, rhs: f64) -> Self::Output {
-        Polynomial::new(self.coefs.iter().map(|&c| c*rhs).collect())
+        Polynomial::new(self.coefs.iter().map(|&c| c * rhs).collect())
     }
 }
 
 impl Div<f64> for Polynomial {
     type Output = Polynomial;
     fn div(self, rhs: f64) -> Self::Output {
-        Polynomial::new(self.coefs.iter().map(|&c| c/rhs).collect())
+        Polynomial::new(self.coefs.iter().map(|&c| c / rhs).collect())
     }
 }
 
 impl Mul for Polynomial {
     type Output = Polynomial;
-    fn mul(self, rhs: Polynomial) -> Self::Output{
-        let mut res = vec![0.0; self.coefs.len()+rhs.coefs.len()];
+    fn mul(self, rhs: Polynomial) -> Self::Output {
+        let mut res = vec![0.0; self.coefs.len() + rhs.coefs.len()];
         for (li, litem) in self.coefs.iter().enumerate() {
             for (ri, ritem) in rhs.coefs.iter().enumerate() {
-                res[li+ri] = res[li+ri] + litem*ritem
+                res[li + ri] = res[li + ri] + litem * ritem
             }
         }
         Polynomial::new(res)
@@ -114,9 +115,9 @@ impl Mul for Polynomial {
 
 impl Add for Polynomial {
     type Output = Polynomial;
-    fn add(self, rhs: Polynomial) -> Self::Output{
-        let (mut long,short) = if self.coefs.len()>rhs.coefs.len() {
-            (self,rhs)
+    fn add(self, rhs: Polynomial) -> Self::Output {
+        let (mut long, short) = if self.coefs.len() > rhs.coefs.len() {
+            (self, rhs)
         } else {
             (rhs, self)
         };
