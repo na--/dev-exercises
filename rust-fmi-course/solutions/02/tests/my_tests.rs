@@ -7,6 +7,12 @@ fn test_description_constraints() {
     assert_eq!(Polynomial::from(vec![]), Polynomial::from(vec![0.0, 0.0]));
     assert_eq!(Polynomial::from(vec![0.0, 1.0]), Polynomial::from(vec![1.0]));
     assert_eq!(Polynomial::from(vec![1.0, 2.0, 3.0]), Polynomial::from(vec![0.0, 0.0, 1.0, 2.0, 3.0]));
+
+
+    assert_eq!(
+        Polynomial::from(vec![1.0, 2.0]) * Polynomial::from(vec![2.0, 1.0]),
+        Polynomial::from(vec![2.0, 5.0, 2.0])
+    );
 }
 
 

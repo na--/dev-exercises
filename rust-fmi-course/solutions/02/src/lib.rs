@@ -24,9 +24,28 @@ impl Polynomial {
     }
 
     pub fn interpolate(points: Vec<(f64, f64)>) -> Option<Self> {
-        // TODO
-        None
+        let mut res = Polynomial::default();
+
+        for (j, jpoint) in points.iter().enumerate() {
+            let mut interm = Polynomial::new(vec![jpoint.1]);
+            for (m, mpoint) in points.iter().enumerate() {
+                if j == m {
+                    continue;
+                }
+                if jpoint.0 == mpoint.0  {
+                    return None;
+                }
+                interm = interm
+                    * Polynomial::new(vec![-mpoint.0, 1.0])
+                    / (jpoint.0 - mpoint.0);
+
+            };
+            res = res + interm;
+        };
+
+        Some(res)
     }
+
 
     fn trim_trailing_zeros(&mut self) {
         match self.coefs.iter().rposition(|&x| ! eq(x, 0.0)) {
@@ -85,20 +104,32 @@ impl Div<f64> for Polynomial {
     }
 }
 
-/*
 impl Mul for Polynomial {
     type Output = Polynomial;
     fn mul(self, rhs: Polynomial) -> Self::Output{
-        // TODO
-        self
+        let mut res = vec![0.0; self.coefs.len()+rhs.coefs.len()];
+        for (li, litem) in self.coefs.iter().enumerate() {
+            for (ri, ritem) in rhs.coefs.iter().enumerate() {
+                res[li+ri] = res[li+ri] + litem*ritem
+            }
+        }
+        Polynomial::new(res)
     }
 }
 
 impl Add for Polynomial {
     type Output = Polynomial;
     fn add(self, rhs: Polynomial) -> Self::Output{
-        // TODO
-        self
+        let (mut long,short) = if self.coefs.len()>rhs.coefs.len() {
+            (self,rhs)
+        } else {
+            (rhs, self)
+        };
+
+        for (i, item) in short.coefs.iter().enumerate() {
+            long.coefs[i] = long.coefs[i] + item;
+        }
+        long.trim_trailing_zeros();
+        long
     }
 }
-*/
