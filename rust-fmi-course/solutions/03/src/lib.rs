@@ -52,7 +52,9 @@ impl FromStr for Command {
             Some(ref s) if "info".starts_with(s) => Ok(Command::Info),
             Some(ref s) if "quit".starts_with(s) => Ok(Command::Quit),
             Some(ref s) if "try".starts_with(s) => match (words.next(), words.next()) {
-                (Some(ref t), Some(ref l)) if ("letter".starts_with(t) && l.len() == 1) => {
+                (Some(ref t), Some(ref l))
+                    if ("letter".starts_with(t) && l.chars().count() == 1) =>
+                {
                     Ok(Command::TryLetter(l.chars().next().unwrap()))
                 }
                 (Some(ref t), Some(ref w)) if "word".starts_with(t) => {
